@@ -10,7 +10,7 @@ on:
 
 jobs:
   build-and-deploy:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@master
@@ -18,20 +18,17 @@ jobs:
     - name: Set up Python version
       uses: actions/setup-python@v1
       with:
-        python-version: '3.6'
+        python-version: '3.7'
 
-    - name: Install Python dependencies
-      run: |
-        python3 -m venv env
-        source env/bin/activate
-        pip install -r requirements.txt
-    - name: Zip the application files
-      run: zip -r myapp.zip .
+    - name: Build using AppService-Build
+      uses: azure/appservice-build@v1
+      with:
+        platform: python
+        platform-version: '3.7'
 
     - name: 'Deploy to Azure Web App'
       uses: azure/webapps-deploy@v1
       with:
         app-name: 'djangosample3'
         slot-name: 'production'
-        publish-profile: ${{ secrets.AzureAppService_PublishProfile_4be0ce42cfad4661af192dc358e3a85b }}
-        package: './myapp.zip'
+        publish-profile: ${{ secrets.AzureAppService_PublishProfile_29194f5fa659461c97a0368e1587a8db }}
